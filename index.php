@@ -10,7 +10,7 @@ $LINKS = array('https://www.fw-gleidingen.de/', 'http://www.fw-rethen.de/');
 ?>
 
 <head>
-  <title><?php echo $PAGE_TITLE ?></title>
+  <title><?= $PAGE_TITLE ?></title>
 </head>
 
 <?php
@@ -53,7 +53,7 @@ h1 {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url("<?php echo $img; ?>");
+  background-image: url("<?= $img; ?>");
   height: 100%;
 }
 
@@ -114,22 +114,22 @@ h1 {
 
 <div class="title">
   <?php if ($PAGE_TITLE): ?>
-    <h1 class="bg-red"><?php echo $PAGE_TITLE; ?></h1>
+    <h1 class="bg-red"><?= $PAGE_TITLE; ?></h1>
   <?php endif; ?>
   <?php if ($PAGE_LEAD): ?>
-    <h4 class="bg-red"><?php echo $PAGE_LEAD; ?></h4>
+    <h4 class="bg-red"><?= $PAGE_LEAD; ?></h4>
   <?php endif; ?>
 </div>
 
 <div class="links">
   <?php foreach ($LINKS as $link): ?>
-    <a class="btn" href="<?php echo $link; ?>"><?php echo parse_url($link, PHP_URL_HOST); ?></a>
+    <a class="btn" href="<?= $link; ?>"><?= parse_url($link, PHP_URL_HOST); ?></a>
   <?php endforeach; ?>
 </div>
 
 <?php if (!$IMG_PINNED): ?>
   <div class="footer">
-    <h3>aktualisiert vor <?php echo $time_since; ?></h3>
+    <h3>aktualisiert vor <?= $time_since; ?></h3>
   </div>
 <?php endif; ?>
 
