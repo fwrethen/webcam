@@ -4,6 +4,7 @@ $PAGE_TITLE = 'Feuerwehrhaus Gleidingen & Rethen';
 $PAGE_LEAD = '';
 $IMG_PATH = '';
 $IMG_PREFIX = 'cam_';
+$IMG_PINNED = '';
 $LINKS = array('https://www.fw-gleidingen.de/', 'http://www.fw-rethen.de/');
 /*** KONFIGURATION ENDE ***/
 ?>
@@ -13,13 +14,19 @@ $LINKS = array('https://www.fw-gleidingen.de/', 'http://www.fw-rethen.de/');
 </head>
 
 <?php
+$img = '';
 if ($IMG_PATH && substr($IMG_PATH, -1) != '/') $IMG_PATH .= '/';
-$imgs = array_reverse(glob($IMG_PATH . $IMG_PREFIX . '*.[Jj][Pp][Gg]'));
-$time_since = round((time() - filemtime($imgs[0])) / 60);
-if ($time_since < 120)
-  $time_since .= ' Minuten';
-else
-  $time_since = round($time_since / 60) . ' Stunden';
+if ($IMG_PINNED):
+  $img = $IMG_PATH . $IMG_PINNED;
+else:
+  $imgs = array_reverse(glob($IMG_PATH . $IMG_PREFIX . '*.[Jj][Pp][Gg]'));
+  $time_since = round((time() - filemtime($imgs[0])) / 60);
+  if ($time_since < 120)
+    $time_since .= ' Minuten';
+  else
+    $time_since = round($time_since / 60) . ' Stunden';
+  $img = $imgs[0];
+endif;
 ?>
 
 <style>
@@ -46,7 +53,7 @@ h1 {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url("<?php echo $imgs[0]; ?>");
+  background-image: url("<?php echo $img; ?>");
   height: 100%;
 }
 
@@ -120,9 +127,11 @@ h1 {
   <?php endforeach; ?>
 </div>
 
-<div class="footer">
-  <h3>aktualisiert vor <?php echo $time_since; ?></h3>
-</div>
+<?php if (!$IMG_PINNED): ?>
+  <div class="footer">
+    <h3>aktualisiert vor <?php echo $time_since; ?></h3>
+  </div>
+<?php endif; ?>
 
 </div>
 
