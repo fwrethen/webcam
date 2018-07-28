@@ -5,6 +5,8 @@ $PAGE_LEAD = '';
 $IMG_PATH = '';
 $IMG_PREFIX = 'cam_';
 $IMG_PINNED = '';
+$IMG_POSITION_X = '70%';
+$IMG_POSITION_Y = '0%';
 $LINKS = array('https://www.fw-gleidingen.de/', 'http://www.fw-rethen.de/');
 /*** KONFIGURATION ENDE ***/
 ?>
@@ -27,6 +29,9 @@ else:
     $time_since = round($time_since / 60) . ' Stunden';
   $img = $imgs[0];
 endif;
+
+if (!$IMG_POSITION_X) $IMG_POSITION_X = 'center';
+if (!$IMG_POSITION_Y) $IMG_POSITION_Y = 'center';
 ?>
 
 <style>
@@ -50,7 +55,7 @@ h1 {
 
 .wrapper {
   /*! opacity: 0.65; */
-  background-position: center;
+  background-position: <?= $IMG_POSITION_X?> <?= $IMG_POSITION_Y; ?>;
   background-repeat: no-repeat;
   background-size: cover;
   background-image: url("<?= $img; ?>");
