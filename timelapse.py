@@ -37,10 +37,7 @@ if not os.path.exists(temp_folder):
     os.makedirs(temp_folder)
 
 for cnt, image in enumerate(images):
-    temp_img = temp_folder + '/' + image
     date = int(re.search(r'cam_(\d{8})', image).group(1))
-
-    shutil.copyfile(image, temp_img)
 
     status_msg = "Cropping image {:3} of {}".format(cnt + 1, len(images))
     sys.stdout.write(status_msg)
@@ -54,9 +51,9 @@ for cnt, image in enumerate(images):
     else:
         crop = crop2
 
-    im = Image.open(temp_img)
+    im = Image.open(image)
     im_cropped = im.crop(crop)
-    im_cropped.save(temp_img, 'JPEG', quality=90)
+    im_cropped.save(temp_folder + '/' + image, 'JPEG', quality=90)
 
 sys.stdout.write("\n")
 
