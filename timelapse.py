@@ -4,6 +4,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 
 from PIL import Image
 
@@ -35,11 +36,16 @@ images = list(filter(lambda x: x not in blacklist, images))
 if not os.path.exists(temp_folder):
     os.makedirs(temp_folder)
 
-for image in images:
+for cnt, image in enumerate(images):
     temp_img = temp_folder + '/' + image
     date = int(re.search(r'cam_(\d{8})', image).group(1))
 
     shutil.copyfile(image, temp_img)
+
+    status_msg = "Cropping image {:3} of {}".format(cnt + 1, len(images))
+    sys.stdout.write(status_msg)
+    sys.stdout.flush()
+    sys.stdout.write("\b" * len(status_msg))
 
     crop1 = (415, 153, 1863, 968)
     crop2 = (415, 55, 1863, 870)
@@ -51,6 +57,8 @@ for image in images:
     im = Image.open(temp_img)
     im_cropped = im.crop(crop)
     im_cropped.save(temp_img, 'JPEG', quality=90)
+
+sys.stdout.write("\n")
 
 subprocess.call(['ffmpeg', '-y', '-r', video_framerate,
                  '-pattern_type', 'glob', '-i', temp_folder+'/cam_*.jpg',
