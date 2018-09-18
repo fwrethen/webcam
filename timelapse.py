@@ -6,10 +6,11 @@ import shutil
 import subprocess
 import sys
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 video_filename = 'timelapse.mp4'
 video_framerate = '6'
+caption_date = True
 temp_folder = 'temp'
 
 blacklist = ['cam_201806240020.jpg',
@@ -37,7 +38,7 @@ if not os.path.exists(temp_folder):
     os.makedirs(temp_folder)
 
 for cnt, image in enumerate(images):
-    date = int(re.search(r'cam_(\d{8})', image).group(1))
+    date = re.search(r'cam_(\d{8})', image).group(1)
 
     status_msg = "Cropping image {:3} of {}".format(cnt + 1, len(images))
     sys.stdout.write(status_msg)
@@ -46,13 +47,28 @@ for cnt, image in enumerate(images):
 
     crop1 = (415, 153, 1863, 968)
     crop2 = (415, 55, 1863, 870)
-    if (date <= 20180726):
+    if (int(date) <= 20180726):
         crop = crop1
     else:
         crop = crop2
 
     im = Image.open(image)
     im_cropped = im.crop(crop)
+
+    if caption_date:
+        font = ImageFont.truetype(
+            "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf",
+            36,
+            encoding="unic"
+        )
+        draw = ImageDraw.Draw(im_cropped)
+        date = '.'.join(map(str, (date[-2:], date[-4:-2], date[:4])))
+        margin = 40
+        width, height = im_cropped.size
+        textwidth, textheight = draw.textsize(date, font)
+        xy = (width - textwidth - margin, height - textheight - margin)
+        draw.text(xy, date, font=font, fill=(96, 96, 96))
+
     im_cropped.save(temp_folder + '/' + image, 'JPEG', quality=90)
 
 sys.stdout.write("\n")
