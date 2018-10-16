@@ -19,9 +19,10 @@ blacklist = ['cam_201806240020.jpg',
              'cam_201807261200.jpg',
              'cam_201808080800.jpg',
              'cam_201808141600.jpg',
-             'cam_201808241800.jpg']
+             'cam_201808241800.jpg',
+             'cam_201810020800.jpg']
 
-filter_regex = re.compile(r'^cam_(?!\d{8}(0[0-6]00|0004|2200))[0-9]+\.jpg$')
+filter_regex = re.compile(r'^cam_\d{12}\.jpg$')
 
 files = []
 
@@ -38,12 +39,18 @@ if not os.path.exists(temp_folder):
     os.makedirs(temp_folder)
 
 for cnt, image in enumerate(images):
-    date = re.search(r'cam_(\d{8})', image).group(1)
+    date, time = re.search(r'cam_(\d{8})(\d{4})', image).group(1, 2)
 
-    status_msg = "Cropping image {:3} of {}".format(cnt + 1, len(images))
+    status_msg = "Processing image {:3} of {}".format(cnt + 1, len(images))
     sys.stdout.write(status_msg)
     sys.stdout.flush()
     sys.stdout.write("\b" * len(status_msg))
+
+    # Do not process images taken at night.
+    if ((22 <= int(time) <= 600) or (int(time) >= 2100) or
+            (int(date) > 20180910 and int(time) > 1900) or
+            (int(time) <= 4)):
+        continue
 
     crop1 = (415, 153, 1863, 968)
     crop2 = (415, 55, 1863, 870)
@@ -74,7 +81,7 @@ for cnt, image in enumerate(images):
 sys.stdout.write("\n")
 
 subprocess.call(['ffmpeg', '-y', '-r', video_framerate,
-                 '-pattern_type', 'glob', '-i', temp_folder+'/cam_*.jpg',
+                 '-pattern_type', 'glob', '-i', temp_folder + '/cam_*.jpg',
                  '-s', 'hd720', '-vcodec', 'libx264', video_filename])
 
 shutil.rmtree(temp_folder, ignore_errors=True)
