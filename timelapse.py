@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 video_filename = 'timelapse.mp4'
 video_framerate = '6'
+video_crf = '30'
 caption_date = True
 temp_folder = 'temp'
 
@@ -20,7 +21,10 @@ blacklist = ['cam_201806240020.jpg',
              'cam_201808080800.jpg',
              'cam_201808141600.jpg',
              'cam_201808241800.jpg',
-             'cam_201810020800.jpg']
+             'cam_201810020800.jpg',
+             'cam_201812060800.jpg',
+             'cam_201812090800.jpg',
+             'cam_201901260800.jpg']
 
 filter_regex = re.compile(r'^cam_\d{12}\.jpg$')
 
@@ -49,6 +53,8 @@ for cnt, image in enumerate(images):
     # Do not process images taken at night.
     if ((22 <= int(time) <= 600) or (int(time) >= 2100) or
             (int(date) > 20180910 and int(time) > 1900) or
+            (int(date) > 20181027 and int(time) > 1700) or
+            (int(date) > 20181212 and int(date) < 20190117 and int(time) < 900) or
             (int(time) <= 4)):
         continue
 
@@ -82,6 +88,6 @@ sys.stdout.write("\n")
 
 subprocess.call(['ffmpeg', '-y', '-r', video_framerate,
                  '-pattern_type', 'glob', '-i', temp_folder + '/cam_*.jpg',
-                 '-s', 'hd720', '-vcodec', 'libx264', video_filename])
+                 '-s', 'hd720', '-vcodec', 'libx264', '-crf', video_crf, video_filename])
 
 shutil.rmtree(temp_folder, ignore_errors=True)
