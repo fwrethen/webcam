@@ -4,7 +4,8 @@ $PAGE_TITLE = 'Feuerwehrhaus Gleidingen & Rethen';
 $PAGE_LEAD = '';
 $IMG_PATH = '';
 $IMG_PREFIX = 'cam_';
-$IMG_PINNED = '';
+$IMG_PINNED = 'cam_201905031800.jpg';
+$VIDEO = 'timelapse.mp4';
 $IMG_POSITION_X = '70%';
 $IMG_POSITION_Y = '0%';
 $LINKS = array('https://www.fw-gleidingen.de/', 'http://www.fw-rethen.de/');
@@ -55,11 +56,28 @@ h1 {
 
 .wrapper {
   /*! opacity: 0.65; */
-  background-position: <?= $IMG_POSITION_X?> <?= $IMG_POSITION_Y; ?>;
+  background-position: <?= $IMG_POSITION_X ?> <?= $IMG_POSITION_Y ?>;
   background-repeat: no-repeat;
   background-size: cover;
   background-image: url("<?= $img; ?>");
   height: 100%;
+}
+
+.video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.video > video {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-height: 100%;
+  min-width: 100%;
 }
 
 .overlay {
@@ -116,6 +134,14 @@ h1 {
 
 <body>
 <div class="wrapper">
+
+<?php if ($VIDEO): ?>
+  <div class="video">
+    <video autoplay muted loop>
+      <source src="<?= $VIDEO ?>" type="video/mp4">
+    </video>
+  </div>
+<?php endif; ?>
 
 <div class="title">
   <?php if ($PAGE_TITLE): ?>
