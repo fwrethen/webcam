@@ -1,14 +1,14 @@
 <?php
 /*** KONFIGURATION ***/
-$PAGE_TITLE = 'Feuerwehrhaus Gleidingen & Rethen';
+$PAGE_TITLE = 'Altes Feuerwehrhaus Rethen';
 $PAGE_LEAD = '';
 $IMG_PATH = '';
 $IMG_PREFIX = 'cam_';
-$IMG_PINNED = 'cam_201905031800.jpg';
-$VIDEO = 'timelapse.mp4';
+$IMG_PINNED = '';
+$VIDEO = '';
 $IMG_POSITION_X = '70%';
-$IMG_POSITION_Y = '0%';
-$LINKS = array('https://www.fw-gleidingen.de/', 'http://www.fw-rethen.de/');
+$IMG_POSITION_Y = '50%';
+$LINKS = array('https://www.fw-rethen.de/');
 /*** KONFIGURATION ENDE ***/
 ?>
 
