@@ -1,7 +1,7 @@
 <?php
 /*** KONFIGURATION ***/
-$PAGE_TITLE = 'Altes Feuerwehrhaus Rethen';
-$PAGE_LEAD = '';
+$PAGE_TITLE = 'Feuerwehrhaus Rethen 1957 &minus; 2019';
+$PAGE_LEAD = '&hellip;mach\'s gut, altes Haus!';
 $IMG_PATH = '';
 $IMG_PREFIX = 'cam_';
 $IMG_PINNED = '';
@@ -9,10 +9,12 @@ $VIDEO = '';
 $IMG_POSITION_X = '70%';
 $IMG_POSITION_Y = '50%';
 $LINKS = array('https://www.fw-rethen.de/');
+$AUTO_REFRESH = 120;
 /*** KONFIGURATION ENDE ***/
 ?>
 
 <head>
+  <?php if ($AUTO_REFRESH): ?><meta http-equiv="refresh" content="<?= $AUTO_REFRESH; ?>"><?php endif; ?>
   <title><?= $PAGE_TITLE ?></title>
 </head>
 
@@ -106,7 +108,7 @@ h1 {
 }
 
 .bg-red {
-  display: inline-block;
+  display: table;
   padding: 1vmin;
   background-color: #A20004;
   margin-bottom: 2vmin;
