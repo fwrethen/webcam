@@ -1,6 +1,6 @@
 <?php
 /*** KONFIGURATION ***/
-$PAGE_TITLE = 'Feuerwehrhaus Rethen 1957 &minus; 2019';
+$PAGE_TITLE = 'Feuerwehrhaus Rethen 1957&minus;2019';
 $PAGE_LEAD = '&hellip;mach\'s gut, altes Haus!';
 $IMG_PATH = '';
 $IMG_PREFIX = 'cam_';
@@ -25,12 +25,20 @@ if ($IMG_PINNED):
   $img = $IMG_PATH . $IMG_PINNED;
 else:
   $imgs = array_reverse(glob($IMG_PATH . $IMG_PREFIX . '*.[Jj][Pp][Gg]'));
-  $time_since = round((time() - filemtime($imgs[0])) / 60);
+  $img = $imgs[0];
+
+  // check for JFIF end of file marker FFD9
+  $jpgdata = fopen($img, 'r');
+  fseek($jpgdata, -2, SEEK_END);
+  if (fread($jpgdata, 2) != "\xFF\xD9")
+    $img = $imgs[1];
+  fclose($jpgdata);
+
+  $time_since = round((time() - filemtime($img)) / 60);
   if ($time_since < 120)
     $time_since .= ' Minuten';
   else
     $time_since = round($time_since / 60) . ' Stunden';
-  $img = $imgs[0];
 endif;
 
 if (!$IMG_POSITION_X) $IMG_POSITION_X = 'center';
