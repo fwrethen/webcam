@@ -9,16 +9,10 @@ $VIDEO = '';
 $IMG_POSITION_X = '70%';
 $IMG_POSITION_Y = '50%';
 $LINKS = array('https://www.fw-rethen.de/');
-$AUTO_REFRESH = 120;
+$AUTO_REFRESH = 90;
 /*** KONFIGURATION ENDE ***/
-?>
 
-<head>
-  <?php if ($AUTO_REFRESH): ?><meta http-equiv="refresh" content="<?= $AUTO_REFRESH; ?>"><?php endif; ?>
-  <title><?= $PAGE_TITLE ?></title>
-</head>
 
-<?php
 $img = '';
 if ($IMG_PATH && substr($IMG_PATH, -1) != '/') $IMG_PATH .= '/';
 if ($IMG_PINNED):
@@ -34,16 +28,36 @@ else:
     $img = $imgs[1];
   fclose($jpgdata);
 
-  $time_since = round((time() - filemtime($img)) / 60);
+  $timestamp = filemtime($img);
+  $time_since = round((time() - $timestamp) / 60);
   if ($time_since < 120)
     $time_since .= ' Minuten';
   else
     $time_since = round($time_since / 60) . ' Stunden';
 endif;
 
+$json_data = json_encode([
+  'image' => $img,
+  'timestamp' => $timestamp,
+]);
+
+if (isset($_GET["refresh"])) {
+  echo json_encode([
+    'image' => $img,
+    'timestamp' => $timestamp,
+  ]);
+  die;
+}
+
+
 if (!$IMG_POSITION_X) $IMG_POSITION_X = 'center';
 if (!$IMG_POSITION_Y) $IMG_POSITION_Y = 'center';
 ?>
+
+<head>
+  <title><?= $PAGE_TITLE ?></title>
+  <meta charset="UTF-8">
+</head>
 
 <style>
 * {
@@ -64,7 +78,7 @@ h1 {
   font-size: 5vmin;
 }
 
-.wrapper {
+#wrapper {
   /*! opacity: 0.65; */
   background-position: <?= $IMG_POSITION_X ?> <?= $IMG_POSITION_Y ?>;
   background-repeat: no-repeat;
@@ -143,7 +157,7 @@ h1 {
 </style>
 
 <body>
-<div class="wrapper">
+<div id="wrapper">
 
 <?php if ($VIDEO): ?>
   <div class="video">
@@ -170,10 +184,43 @@ h1 {
 
 <?php if (!$IMG_PINNED): ?>
   <div class="footer">
-    <h3>aktualisiert vor <?= $time_since; ?></h3>
+    <h3 id="updated-caption">aktualisiert vor <?= $time_since; ?></h3>
   </div>
 <?php endif; ?>
 
 </div>
-
 </body>
+
+<?php if ($AUTO_REFRESH): ?>
+  <script>
+    let data = <?= $json_data ?>;
+    refresh();
+    function refresh() {
+      setTimeout(function () {
+        request();
+        refresh();
+      }, <?= $AUTO_REFRESH * 1000 ?>)
+    }
+    function request() {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', '?refresh');
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          data = JSON.parse(xhr.responseText);
+          refresh_img();
+        }
+        else {
+          console.log(xhr.status);
+        }
+      };
+      xhr.send();
+    }
+    function refresh_img() {
+      let now = new Date().getTime();
+      let t_since = Math.round((now / 1000 - data.timestamp) / 60);
+      let caption = 'aktualisiert vor '+t_since+' Minuten';
+      document.getElementById('updated-caption').innerText = caption;
+      document.getElementById('wrapper').style.backgroundImage = 'url("'+data.image+'")';
+    }
+  </script>
+<?php endif; ?>
