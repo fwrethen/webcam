@@ -24,6 +24,8 @@ date_filter = [
     '20191104',
     '20191105',
     '20191106',
+    '20191107',
+    '20191108',
 ]
 
 files = []
@@ -44,6 +46,9 @@ for cnt, image in enumerate(images):
     date, time = re.search(r'cam_(\d{8})(\d{4})', image).group(1, 2)
     if date not in date_filter:
         continue
+    if (int(time) < 700 or int(time) > 1700) and (time.endswith('5') or int(time[-2]) % 2 != 0):
+        continue
+
 
     status_msg = "Processing image {:3} of {}".format(cnt + 1, len(images))
     sys.stdout.write(status_msg)
