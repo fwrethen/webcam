@@ -5,7 +5,7 @@ $PAGE_LEAD = '&hellip;mach\'s gut, altes Haus!';
 $IMG_PATH = '';
 $IMG_PREFIX = 'cam_';
 $IMG_PINNED = '';
-$VIDEO = '';
+$VIDEO = 'timelapse-lq.mp4';
 $IMG_POSITION_X = '70%';
 $IMG_POSITION_Y = '50%';
 $LINKS = array('https://www.fw-rethen.de/');
@@ -182,7 +182,7 @@ h1 {
   <?php endforeach; ?>
 </div>
 
-<?php if (!$IMG_PINNED): ?>
+<?php if (!($IMG_PINNED || $VIDEO)): ?>
   <div class="footer">
     <h3 id="updated-caption">aktualisiert vor <?= $time_since; ?></h3>
   </div>
